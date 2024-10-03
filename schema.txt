@@ -1,0 +1,56 @@
+CREATE TABLE IF NOT EXISTS AllDatabases
+(
+    id   INT UNSIGNED PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS Tables
+(
+    id          INT UNSIGNED PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    database_id INT UNSIGNED NOT NULL,
+    num_rows    INT UNSIGNED NOT NULL DEFAULT 0,
+    UNIQUE (name, database_id),
+    FOREIGN KEY (database_id) REFERENCES AllDatabases (id)
+);
+
+CREATE TABLE IF NOT EXISTS Datatypes
+(
+    id   INT UNSIGNED PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS Columns
+(
+    id            INT UNSIGNED PRIMARY KEY,
+    name          VARCHAR(100) NOT NULL,
+    table_id      INT UNSIGNED NOT NULL,
+    datatype_id   INT UNSIGNED NOT NULL,
+    not_null      BOOL         NOT NULL DEFAULT FALSE,
+    default_value TEXT,
+    UNIQUE (name, table_id),
+    FOREIGN KEY (datatype_id) REFERENCES Datatypes (id),
+    FOREIGN KEY (table_id) REFERENCES Tables (id)
+);
+
+CREATE TABLE IF NOT EXISTS ForeignKeys
+(
+    column_id            INT UNSIGNED NOT NULL,
+    references_column_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (column_id) REFERENCES Columns (id),
+    FOREIGN KEY (references_column_id) REFERENCES Columns (id)
+);
+
+CREATE TABLE IF NOT EXISTS UniqueColumnSets
+(
+    id         INT UNSIGNED PRIMARY KEY,
+    is_primary BOOL NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS UniqueColumnSetEntries
+(
+    set_id    INT UNSIGNED NOT NULL,
+    column_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (set_id) REFERENCES UniqueColumnSets (id),
+    FOREIGN KEY (column_id) REFERENCES Columns (id)
+);

@@ -1,0 +1,40 @@
+[
+    {
+        "type": "function",
+        "function": {
+            "name": "query_database",
+            "description": "Execute a SQL query",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "sql_string": {
+                        "type": "string",
+                        "description": "The SQL string to execute"
+                    }
+                },
+                "required": [
+                    "sql_string"
+                ]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "modify_database",
+            "description": "Execute a SQL insert or update statement",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "sql_string": {
+                        "type": "string",
+                        "description": "The SQL string to execute"
+                    }
+                },
+                "required": [
+                    "sql_string"
+                ]
+            }
+        }
+    }
+]
