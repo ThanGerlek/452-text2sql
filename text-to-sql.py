@@ -19,22 +19,15 @@ mydb = mysql.connector.connect(
         database=os.getenv('MYSQL_DATABASE')
 )
 
-sys_prompt = ('You are a chat assistant for a SQL database. You have access to MySQL queries. '
-              'Your task is to decide whether you should query the database, ask the user a question, '
-              'or send them a message, taking into account what has already been said so that information '
-              'is not repeated. '
-              'When the user asks you about the database, send the database a SQL query to answer their '
-              'question; you will be given the result, which you can then use to answer their question. '
-              'Respond simply and concisely, as if answering the user\'s question.\n'
-              'If you have just asked the user a question, wait for the user to respond if they have not yet. '
-              'Do not repeat yourself. If the assistant has just said something, do not say the same thing again. '
-              'Do not query the database twice in a row; communicate with the user first.\n'
-              'For example, if you are asked "How many foreign keys are in the Tables and Columns tables?" you could '
-              'use SELECT COUNT(*) FROM ForeignKeys JOIN WHERE'
-              'Start the conversation by asking them what they would like to know from the database.')
+with open('prompts.json') as f:
+    prompts = json.load(f)
+
+sys_prompt = prompts['sys-prompt']
+sys_prompt += prompts['sdx-1']
+# sys_prompt += prompts['sdx-2']
 
 with open('schema.txt') as f:
-    sys_prompt += f'\nThe schema is:\n{f.read()}'
+    sys_prompt += f'\n\nThe schema is:\n{f.read()}'
 
 with open('agent_tools.json') as f:
     agent_tools = json.load(f)
@@ -124,11 +117,12 @@ def query_database(sql_string):
         add_user_message(f'[DB-PROGRAM]: Query failed. Error: {e}')
 
 
-def modify_database(sql_query):
-    add_user_message(f'[DB-PROGRAM]: Executing SQL command: {sql_query}')
+def modify_database(sql_string):
+    print(f'Executing SQL: {sql_string}')
+    add_user_message(f'[DB-PROGRAM]: Executing SQL command: {sql_string}')
     cursor = mydb.cursor()
     try:
-        cursor.execute(sql_query)
+        cursor.execute(sql_string)
         add_user_message(f'[DB-PROGRAM]: Finished executing.')
     except Exception as e:
         add_user_message(f'[DB-PROGRAM]: Execution failed. Error: {e}')
