@@ -26,7 +26,6 @@ The datatypes not used by each table are as follows:
 4. **ForeignKeys**: TEXT, VARCHAR(100)
 5. **UniqueColumnSets**: INT UNSIGNED, TEXT, VARCHAR(100)
 6. **UniqueColumnSetEntries**: INT UNSIGNED, TEXT, VARCHAR(100)
->>> 
 ```
 
 Somewhat less successful:
@@ -116,7 +115,7 @@ Executing SQL: SELECT t.name FROM Tables t JOIN UniqueColumnSetEntries ue ON t.i
 There are no tables in the database that contain at least two primary key columns.
 ```
 
-#### I mean, it's not wrong...
+#### I mean, it's not exactly *wrong...*
 
 ```
 >>> How many foreign keys does the ForeignKeys table have?
